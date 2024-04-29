@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using AutoBattle.Enums;
 using UnityEngine;
 
 
@@ -10,10 +12,16 @@ public class Gameboard : MonoBehaviour
     public Vector2 GetTopLeftCorner =>  new Vector2(-_sr.bounds.extents.x, _sr.bounds.extents.y);
     public Vector2 GetBottomLeftCorner => new Vector2(-_sr.bounds.extents.x, -_sr.bounds.extents.y);
     public Bounds GetBounds => _sr.bounds;
+    public float UnitScale = 1.0f;
+
+    private Vector3[] _playerLanePosition;
+    public List<Transform> _playerSpawnPoints; // set in editor
+    private Vector3[] _enemyLanePosition;
+    public List<Transform> _enemySpawnPoints; // set in editor
 
     private void Awake()
     {
-
+        #region // scale background
         (float height, float width) = BGUtils.GetScreenSize();
 
         float scale;
@@ -42,8 +50,32 @@ public class Gameboard : MonoBehaviour
         }
         transform.localScale = Vector2.one * scale;
 
+        UnitScale = scale / 6f;
+        #endregion // scale background
+        
+        // get and set after scaling background
+        _playerLanePosition = new Vector3[] {
+            _playerSpawnPoints[0].position,
+            _playerSpawnPoints[1].position,
+            _playerSpawnPoints[2].position
+        };
+        _enemyLanePosition = new Vector3[] {
+            _enemySpawnPoints[0].position,
+            _enemySpawnPoints[1].position,
+            _enemySpawnPoints[2].position
+        };
     }
 
+
+    public Vector3 GetPlayerLanePosition(Lane lane) 
+    {
+        return _playerLanePosition[(int)lane];
+    }
+
+    public Vector3 GetEnemyLanePosition(Lane lane)
+    {
+        return _enemyLanePosition[(int)lane];
+    }
 
 
 
